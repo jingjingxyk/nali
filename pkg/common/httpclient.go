@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -15,7 +16,14 @@ type HttpClient struct {
 
 var httpClient *HttpClient
 
+const (
+	EnableHttpProxy = true
+	HttpProxyUrl    = "http://127.0.0.1:8015"
+)
+
 func init() {
+	ProxyURL, _ := url.Parse(HttpProxyUrl)
+
 	httpClient = &HttpClient{http.DefaultClient}
 	httpClient.Timeout = time.Second * 60
 	httpClient.Transport = &http.Transport{
@@ -23,6 +31,7 @@ func init() {
 		IdleConnTimeout:       time.Second * 10,
 		ResponseHeaderTimeout: time.Second * 10,
 		ExpectContinueTimeout: time.Second * 20,
+		Proxy:                 http.ProxyURL(ProxyURL),
 	}
 }
 
