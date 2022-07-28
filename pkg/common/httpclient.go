@@ -1,6 +1,7 @@
 package common
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -23,7 +24,8 @@ const (
 
 func init() {
 	ProxyURL, _ := url.Parse(HttpProxyUrl)
-
+	fmt.Println(http.ProxyURL(ProxyURL))
+	fmt.Println(http.ProxyFromEnvironment)
 	httpClient = &HttpClient{http.DefaultClient}
 	httpClient.Timeout = time.Second * 60
 	httpClient.Transport = &http.Transport{
@@ -31,7 +33,8 @@ func init() {
 		IdleConnTimeout:       time.Second * 10,
 		ResponseHeaderTimeout: time.Second * 10,
 		ExpectContinueTimeout: time.Second * 20,
-		Proxy:                 http.ProxyURL(ProxyURL),
+		//Proxy:                 http.ProxyURL(ProxyURL),
+		Proxy: http.ProxyFromEnvironment,
 	}
 }
 
